@@ -1,0 +1,86 @@
+# ⚽ La Liga Champion Predictor: An Ensemble Learning Approach
+
+![Python](https://img.shields.io/badge/Python-3.8%2B-blue) ![Scikit-Learn](https://img.shields.io/badge/Library-Scikit--Learn-orange) ![Status](https://img.shields.io/badge/Status-Completed-success)
+
+## 📖 Abstract
+This Final Year Project (FYP) focuses on predicting the winner of the Spanish La Liga using historical match statistics. The core challenge of this dataset is the **Class Imbalance Problem**—in any given season, only one team is the "Champion," while 19 others are "Not Champion."
+
+To address this, the project implements a **Stacked Ensemble Classifier** alongside individual models (Naive Bayes, SVM, Random Forest). It utilizes **SMOTE (Synthetic Minority Over-sampling Technique)** to synthetically balance the training data and **GridSearchCV** to optimize model hyperparameters.
+
+## 🚀 Key Features
+* **Imbalance Handling:** Uses `SMOTE` within a pipeline to oversample minority class instances (Champions) without causing data leakage in the test set.
+* **Feature Engineering:** Focuses on key tactical metrics including:
+    * Short Passes per Game
+    * Goals Scored
+    * Shots per Game
+    * Through Balls per Game
+    * Aerials Won
+* **Advanced Tuning:** Implements `GridSearchCV` with 3-Fold Cross-Validation to find the best parameters for Random Forest and SVM.
+* **Ensemble Learning:** Stacks predictions from multiple "weak learners" using Logistic Regression as a meta-learner.
+
+## 📊 Performance Results
+The models were evaluated based on **F1-Score** and **Recall** (Sensitivity) rather than just Accuracy. In highly imbalanced datasets, Accuracy can be misleading (e.g., a model that predicts "No One Wins" would still have 95% accuracy).
+
+### Comparative Metrics
+
+| Model | Accuracy | Precision | Recall | F1-Score |
+| :--- | :--- | :--- | :--- | :--- |
+| **Naive Bayes** | **94.64%** | **0.3750** | **0.7500** | **0.5000** |
+| SVM | 93.75% | 0.2857 | 0.5000 | 0.3636 |
+| Stacked Ensemble | 93.75% | 0.2857 | 0.5000 | 0.3636 |
+| Random Forest | 91.96% | 0.0000 | 0.0000 | 0.0000 |
+
+### 🔍 Analysis of Results
+1.  **Naive Bayes (Best Performer):** Surprisingly, the simplest probabilistic model achieved the highest **Recall (0.75)** and **F1-Score (0.50)**. It successfully identified 75% of the actual champions in the test set. Its assumption of feature independence worked well for this specific statistical dataset.
+2.  **SVM & Stacked Ensemble:** Both models performed identically. They were more conservative than Naive Bayes, identifying 50% of the champions. The Stacked Ensemble's meta-learner likely weighted the SVM predictions heavily, resulting in identical outputs.
+3.  **Random Forest:** Despite hyperparameter tuning, the Random Forest model yielded a Precision and Recall of 0.0. This indicates it biased heavily toward the majority class ("Not Champion"), a common issue in severe class imbalance even when SMOTE is applied.
+
+## 🛠️ Methodology & Pipeline
+
+The project follows a strict Machine Learning pipeline:
+
+1.  **Data Cleaning:** Handling missing `Year` values and removing rows with null key statistics.
+2.  **Train/Test Split:** 60/40 split with stratification to ensure Champions are present in both sets.
+3.  **Scaling:** Applied `StandardScaler` to normalize feature magnitudes (crucial for SVM).
+4.  **SMOTE Pipeline:**
+    * *Step 1:* Oversample the training data using SMOTE (k=3).
+    * *Step 2:* Fit the classifier on the balanced data.
+5.  **Evaluation:** Metrics recorded on the unseen test set.
+
+## 💻 Installation & Usage
+
+### Prerequisites
+Ensure you have Python installed, then install the dependencies:
+
+```bash
+pip install pandas numpy scikit-learn imbalanced-learn openpyxl
+Running the Project
+Clone the repository:
+
+Bash
+
+git clone [https://github.com/YOUR_USERNAME/LaLiga-Champion-Predictor.git](https://github.com/YOUR_USERNAME/LaLiga-Champion-Predictor.git)
+Ensure MP2 DATASET.csv and actual_champions.xlsx are in the project folder.
+
+Run the script:
+
+Bash
+
+python stacked_ensemble_laliga_advancetuning.py
+📂 File Structure
+stacked_ensemble_laliga_advancetuning.py: Main script containing the model logic, GridSearch, and SMOTE pipeline.
+
+MP2 DATASET.csv: Historical football statistics.
+
+actual_champions.xlsx: Ground truth labels for predictions.
+
+README.md: Project documentation.
+
+🤝 Future Improvements
+Feature Expansion: Incorporating defensive stats (Goals Conceded, Tackles) to improve Random Forest performance.
+
+Deep Learning: Experimenting with LSTM (Long Short-Term Memory) networks to treat the seasons as a time-series sequence.
+
+Meta-Learner Tuning: Experimenting with Random Forest as the meta-learner for the Stacking Classifier instead of Logistic Regression.
+
+Author: Nishin Mohammed Shahir Context: Final Year Project (FYP)
